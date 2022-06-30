@@ -55,8 +55,6 @@ func shareableURL(obj:Dictionary):
 	for key in obj.keys():
 		params[key] = obj[key]
 	sdk_handle.shareableURL(params).then(_cb_shareable_url)
-	
-	#sdk_handle.godot_sharable_url(JSON.print(obj)).then(_cb_shareable_url)
 
 func on_shareable_url(url):
 	emit_signal("shareable_url_ready", url[0])

@@ -24,8 +24,8 @@ func add_poki_export(cfg:ConfigFile):
 	cfg.set_value(poki_section, "runnable", false)
 	cfg.set_value(poki_section, "custom_features", "")
 	cfg.set_value(poki_section, "export_filter", "all_resources")
-	cfg.set_value(poki_section, "include_filter", "Null")
-	cfg.set_value(poki_section, "exclude_filter", "Null")
+	cfg.set_value(poki_section, "include_filter", "")
+	cfg.set_value(poki_section, "exclude_filter", "")
 
 	#preset.x.options
 	cfg.set_value(poki_options, "html/custom_html_shell", "res://addons/poki-sdk/full-size.html")

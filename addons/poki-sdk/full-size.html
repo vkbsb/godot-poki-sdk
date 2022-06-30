@@ -260,7 +260,11 @@ $GODOT_HEAD_INCLUDE
 		}).catch(()=>{
 			startGameLoading()
 		})
-		PokiSDK.setDebug(true)
+
+		let hn = window.location.hostname
+		if(hn == "localhost" || hn == "127.0.0.1"){
+			PokiSDK.setDebug(true)
+		}
 //]]></script>
 </body>
 </html>

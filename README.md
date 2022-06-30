@@ -37,51 +37,45 @@ git clone https://github.com/vkbsb/godot-poki-sdk.git
 ![project-reload](./addons/poki-sdk/images/project_reload.png)
 
 
-## 2.Enable extension
-Once you have done the installation, go to the extension manager and ensure that the 
-poki-build extension is enabled. 
+## 2.Export preset
+Once you have done the installation, go to export dialog. 
 
-1. Open the extension manager
+1. Open the export dialog
 
-![extension-manager-open](./docs/images/extension-manager-launch.png)
+![project-export](./addons/poki-sdk/images/project_export.png)
 
-2. Under project tab, ensure that poki-sdk is enabled. If it's not enabled, enable it. 
+2. Under Presets you should see an entry called "Poki"
 
-![extension-enable](./docs/images/poki_build_extension_enable.png)
+![poki-export](./addons/poki-sdk/images/poki_export_preset.png)
 
 The extension creates the following files in your project directory.
-- preview-template/index.ejs
-- build-templates/common/application.ejs
-- build-templates/web-mobile/index.ejs
-- assets/poki-api/PokiPlatform.ts
-- assets/demo/demo.scene
-- assets/demo/DemoScript.ts
+- Adds a new preset called `Poki` to export config in project.
+- Adds a Auto load Singleton called `PokiSDK` for the game script to use.
 
-![folders-created](./docs/images/poki_files_added.png)
+![autoload-created](./addons/poki-sdk/images/project_autoload.png)
 
 ## 3.Usage 
-In your component scripts, you will be able to import CCPokiSDK and use it to interact with the PokiSDK. The following are the functions that are available for you to use from your game scripts. Checkout the DemoScript.ts for example usage.
+In your node scripts, you will be able to use PokiSDK to interact with the platform. The following are the functions that are available for you to use from your game scripts. Checkout the demo.gd for example usage.
 
-```typescript
-CCPokiSDK.isAdBlocked() //-- in JS it's PokiSDK.isAdBlocked()
-CCPokiSDK.gameplayStart() //-- in JS it's PokiSDK.gameplayStart()
-CCPokiSDK.gameplayStop() //-- in JS it's PokiSDK.gameplayStop()
-CCPokiSDK.commercialBreak() //-- in JS it's PokiSDK.commercialBreak()
-CCPokiSDK.rewardBreak() //-- in JS it's PokiSDK.rewardedBreak()
-CCPokiSDK.shareableURL(params, callback) //-- in JS it's PokiSDK.shareableURL({}).then(url => {})
-local value = CCPokiSDK.getURLParam(key) //-- in JS it's PokiSDK.getURLParam('id')
+```python
+PokiSDK.gameplayStart() #-- in JS it's PokiSDK.gameplayStart()
+PokiSDK.gameplayStop() #-- in JS it's PokiSDK.gameplayStop()
+PokiSDK.commercialBreak() #-- in JS it's PokiSDK.commercialBreak()
+PokiSDK.rewardBreak() #-- in JS it's PokiSDK.rewardedBreak()
+PokiSDK.shareableURL(params) #-- in JS it's PokiSDK.shareableURL({}).then(url => {})
 ```
 
-You will notice that you do not see an equivalent to ``PokiSDK.setDebug(value)`` this is because the extension sets this automatically based on the build you make. 
+You will notice that you do not see an equivalent to ``PokiSDK.setDebug(value)`` this is because the extension sets this automatically based on where the game is hosted.
 ```
 ________________________________________________________
-| Build Type                  | PokiSDK Debug           |
+| HostName                    | PokiSDK Debug           |
 |_____________________________|_________________________|
-| Preview Build               | PokiSDK.setDebug(true) |
-| web-mobile:Debug(checked)   | PokiSDK.setDebug(true) |
-| web-mobile:Debug(un-checked)| PokiSDK.setDebug(false)|
+| localhost                   | PokiSDK.setDebug(true) |
+| 127.0.0.1                   | PokiSDK.setDebug(true) |
+| //any other hostname        | PokiSDK.setDebug(false)|
 ---------------------------------------------------------
 ```
+`Note: You can change this behaviour by editing the exported html file. `
 
 **Rewarded Break**
 
