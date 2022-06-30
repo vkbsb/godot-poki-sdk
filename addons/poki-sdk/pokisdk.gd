@@ -18,15 +18,6 @@ func _ready():
 	_cb_commercial_break = JavaScript.create_callback(self, "on_commercial_break")
 	_cb_reward_break = JavaScript.create_callback(self, "on_reward_break")
 	_cb_shareable_url = JavaScript.create_callback(self, "on_shareable_url")
-	
-	#create a temp function to handle the idctionary as a parameter for this api.
-	#TODO: figure out if there is a better way? 
-	JavaScript.eval("""
-		PokiSDK.godot_sharable_url = function(params){
-			var obj = JSON.parse(params)
-			return PokiSDK.shareableURL(obj)
-		}
-	""", true)
 
 func gameplayStart():
 	if not sdk_handle:
