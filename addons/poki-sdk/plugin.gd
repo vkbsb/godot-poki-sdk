@@ -18,15 +18,23 @@ func add_poki_export(cfg:ConfigFile):
 	var poki_section = "preset" + "." + str(num_exports)
 	var poki_options = poki_section + ".options"
 	
+	#preset.x
 	cfg.set_value(poki_section, "name", "Poki")
 	cfg.set_value(poki_section, "platform", "HTML5")
-	
+	cfg.set_value(poki_section, "runnable", false)
+	cfg.set_value(poki_section, "custom_features", "")
+	cfg.set_value(poki_section, "export_filter", "all_resources")
+	cfg.set_value(poki_section, "include_filter", "Null")
+	cfg.set_value(poki_section, "exclude_filter", "Null")
+
+	#preset.x.options
 	cfg.set_value(poki_options, "html/custom_html_shell", "res://addons/poki-sdk/full-size.html")
 	cfg.set_value(poki_options, "html/head_include", """
 	<script> 
 		//place sitelock code here.
 	</script>
 	""")
+	
 	
 func _enter_tree():
 	var cfg = ConfigFile.new()

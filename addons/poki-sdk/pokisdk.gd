@@ -6,7 +6,7 @@ var _cb_reward_break
 var _cb_shareable_url
 
 signal commercial_break_done 
-signal reward_break_done(response)
+signal rewarded_break_done(response)
 signal shareable_url_ready(url)
 
 # Called when the node enters the scene tree for the first time.
@@ -47,19 +47,25 @@ func on_commercial_break():
 	print("Commercial break done!")
 	emit_signal("commercial_break_done")
 
-func rewardBreak():
+func rewardedBreak():
 	if not sdk_handle:
 		return
-	sdk_handle.rewardBreak().then(_cb_reward_break)
+	sdk_handle.rewardedBreak().then(_cb_reward_break)
 	
-func on_reward_break(success):
+func on_reward_break(args):
 	print("Reward break done!")
-	emit_signal("reward_break_done", success)
+	emit_signal("rewarded_break_done", args[0])
 	
 func shareableURL(obj:Dictionary):
 	if not sdk_handle:
 		return
-	sdk_handle.godot_sharable_url(JSON.print(obj)).then(_cb_shareable_url)
+	var params = JavaScript.create_object("Object")
+	
+	for key in obj.keys():
+		params[key] = obj[key]
+	sdk_handle.shareableURL(params).then(_cb_shareable_url)
+	
+	#sdk_handle.godot_sharable_url(JSON.print(obj)).then(_cb_shareable_url)
 
 func on_shareable_url(url):
 	emit_signal("shareable_url_ready", url[0])

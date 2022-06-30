@@ -3,7 +3,7 @@ extends Node
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	PokiSDK.connect("commercial_break_done", self, "on_commercial_break_done")
-	PokiSDK.connect("reward_break_done", self, "on_reward_break_done")
+	PokiSDK.connect("rewarded_break_done", self, "on_reward_break_done")
 	PokiSDK.connect("shareable_url_ready", self, "on_shareable_url_ready")
 	pass # Replace with function body.
 
@@ -15,8 +15,8 @@ func on_reward_break_done(response):
 		$Label.text = "No Reward."
 	PokiSDK.gameplayStart()
 	
-func on_commercial_break_done():
-	print("Commercial break done")
+func on_commercial_break_done(success):
+	print("Commercial break done", success)
 	PokiSDK.gameplayStart()
 
 func on_shareable_url_ready(url):
@@ -35,5 +35,5 @@ func _on_Button2_pressed():
 
 func _on_Button3_pressed():
 	PokiSDK.gameplayStop()
-	PokiSDK.rewardBreak()
+	PokiSDK.rewardedBreak()
 	pass # Replace with function body.
