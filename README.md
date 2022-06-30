@@ -70,20 +70,22 @@ You will notice that you do not see an equivalent to ``PokiSDK.setDebug(value)``
 ________________________________________________________
 | HostName                    | PokiSDK Debug           |
 |_____________________________|_________________________|
-| localhost                   | PokiSDK.setDebug(true) |
-| 127.0.0.1                   | PokiSDK.setDebug(true) |
-| //any other hostname        | PokiSDK.setDebug(false)|
+| localhost                   | PokiSDK.setDebug(true)  |
+| 127.0.0.1                   | PokiSDK.setDebug(true)  |
+| //any other hostname        | PokiSDK.setDebug(false) |
 ---------------------------------------------------------
+
+Note: You can change this behaviour by editing the exported html file. 
 ```
-`Note: You can change this behaviour by editing the exported html file. `
+
 
 **Rewarded Break**
 
-This ad type is used for optional rewarded actions, for example watching an ad video in exchange for in-game currency, a revive, a level skip... Here are the following steps you need to follow to implement it using this extension. 
-- Register for a call back on `cc.game` for `EVENT_REWARD_BREAK_DONE`
-- if `arguments[0] == true` we can give player reward, else don't reward.  
+This ad type is used for optional rewarded actions, for example watching an ad video in exchange for in-game currency, a revive, a level skip... Here are the following steps you need to follow to implement it using this plugin. 
+- connect your script to `rewarded_break_done` signal on `PokiSDK`
+- The `rewarded_break_done` signal provides a boolean parameter which indicates if the reward should be given or not.
 
-Check out [DemoScript.ts](./templates/demo/DemoScript.ts) for reference. 
+Check out [demo.gd](./demo.gd) for reference. 
 
 
 **SiteLock**
