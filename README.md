@@ -22,7 +22,7 @@ This is the easiest way to get started.
 //screenshots of the store and install process. 
 
 ### From Source/Release
-Download the plugin archive [poki-sdk-v1.0.zip](). 
+Download the plugin archive godot-poki-sdk[master.zip](https://github.com/vkbsb/godot-poki-sdk/archive/refs/heads/master.zip). 
 
 Or download the source code and copy `poki-sdk` directory to your project's `addons` directory. 
 ``` 
@@ -63,6 +63,17 @@ PokiSDK.gameplayStop() #-- in JS it's PokiSDK.gameplayStop()
 PokiSDK.commercialBreak() #-- in JS it's PokiSDK.commercialBreak()
 PokiSDK.rewardBreak() #-- in JS it's PokiSDK.rewardedBreak()
 PokiSDK.shareableURL(params) #-- in JS it's PokiSDK.shareableURL({}).then(url => {})
+
+#Signals available from PokiSDK 
+
+#triggered as soon as the commercial break ad is played.
+commercial_break_done   
+
+#triggered once the reward ad has finished. response indicates if the ad was successfully played or not.
+rewarded_break_done(response) 
+
+#triggered once the shareableURL is ready to use.
+shareable_url_ready(url)
 ```
 
 You will notice that you do not see an equivalent to ``PokiSDK.setDebug(value)`` this is because the extension sets this automatically based on where the game is hosted.
