@@ -6,12 +6,12 @@ This plugin is designed to help the integration of the [PokiSDK](https://sdk.pok
 The plugin provides:
 - An export preset for Poki platform
 - A custom html shell 
-- PokiSDK singleton for making  
+- PokiSDK singleton for GDScript integration.
 - A demo scene showcasing usage
 
-Once you install and enable the extension, you will be able to test the PokiSDK integration in preview mode (in browser) and be able to make builds (web-mobile) that can be uploaded to poki platform. 
+Once you install the plugin and reload the project, you will see a new preset for HTML5 platform called Poki. This will provide the core integration needed for [PokiSDK](https://sdk.poki.com/html5/) by using a custom html shell. You will be able to make api calls using the `PokiSDK` singleton that will be autoloaded for you. 
 
-Please note that Poki is a curated platform, you will need to submit your game through pokifordevelopers.com first, and only work on the sdk integration after the game is approved.
+Please note that Poki is a curated platform, you will need to submit your game through [Poki's Developer Website](https://developers.poki.com/) first, and only work on the sdk integration after the game is approved.
 
 ## 1.Installation
 There are two ways to download and install the plugin

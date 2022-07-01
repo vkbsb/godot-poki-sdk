@@ -10,8 +10,8 @@ config_version=4
 
 [application]
 
-config/name="Plugin Test"
-run/main_scene="res://SampleScene.tscn"
+config/name="PokiSDK"
+run/main_scene="res://addons/demo/DemoScene.tscn"
 config/icon="res://icon.png"
 
 [autoload]
