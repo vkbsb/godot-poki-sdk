@@ -90,13 +90,12 @@ Check out [demo.gd](./demo.gd) for reference.
 
 **SiteLock**
 
-Poki provides a sitelock code to the developers which helps ensure that the game is playable only on Poki's website. Please collect it from your dev contact. Once you get it, paste the code in the ``SiteLock`` field of the ``poki-sdk`` section of the ``web-mobile`` build. 
+Poki provides a sitelock code to the developers which helps ensure that the game is playable only on Poki's website. Please collect it from your dev contact. Once you get it, paste the code in the ``HeadInclude`` section of the poki HTML5 export preset. 
 
-![SiteLock Code](./docs/images/poki_site_lock.png)
+![SiteLock Code](./addons/poki-sdk/images/poki_sitelock.png)
 
-Please note that the sitelock code is embedded in the build only when you make a build with debug box un-checked. 
+`Please note that you have to include your site lock code within the script tag.`
 
-![Web-mobile-release](./docs/images/web-mobile-build-release.png)
 
 **Submit your game on Poki**
 
