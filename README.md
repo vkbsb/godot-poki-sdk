@@ -29,30 +29,36 @@ Or download the source code and copy `poki-sdk` directory to your project's `add
 git clone https://github.com/vkbsb/godot-poki-sdk.git
 ```
 
-1. Once this is done, you can launch the plugin manager in Godot editor
-![settings-menu](./addons/poki-sdk/images/project_menu.png)
-2. Switch to the plugins tab and make sure that the plugin is enabled. 
-![project-settings](./addons/poki-sdk/images/project_settings.png)
-3. Reload the current project
-![project-reload](./addons/poki-sdk/images/project_reload.png)
+1. Once this is done, you can launch the plugin manager in Godot editor under project settings.
 
+[<img src="./addons/poki-sdk/images/project_menu.png" width="400"/>](./addons/poki-sdk/images/project_menu.png)
+
+2. Switch to the plugins tab and make sure that the plugin is enabled. 
+
+[<img src="./addons/poki-sdk/images/project_settings.png" width="450"/>](./addons/poki-sdk/images/project_settings.png)
+
+3. Reload the current project.
+
+[<img src="./addons/poki-sdk/images/project_reload.png" width="400"/>](./addons/poki-sdk/images/project_reload.png)
+
+      
 
 ## 2.Export preset
 Once you have done the installation, go to export dialog. 
 
 1. Open the export dialog
 
-![project-export](./addons/poki-sdk/images/project_export.png)
+[<img src="./addons/poki-sdk/images/project_export.png" width="400"/>](./addons/poki-sdk/images/project_export.png)
 
 2. Under Presets you should see an entry called "Poki"
 
-![poki-export](./addons/poki-sdk/images/poki_export_preset.png)
+[<img src="./addons/poki-sdk/images/poki_export_preset.png" width="800"/>](./addons/poki-sdk/images/poki_export_preset.png)
 
 The extension creates the following files in your project directory.
 - Adds a new preset called `Poki` to export config in project.
 - Adds a Auto load Singleton called `PokiSDK` for the game script to use.
 
-![autoload-created](./addons/poki-sdk/images/project_autoload.png)
+[<img src="./addons/poki-sdk/images/project_autoload.png" width="800"/>](./addons/poki-sdk/images/project_autoload.png)
 
 ## 3.Usage 
 In your node scripts, you will be able to use PokiSDK to interact with the platform. The following are the functions that are available for you to use from your game scripts. Checkout the demo.gd for example usage.
@@ -103,7 +109,7 @@ Check out [demo.gd](./demo.gd) for reference.
 
 Poki provides a sitelock code to the developers which helps ensure that the game is playable only on Poki's website. Please collect it from your dev contact. Once you get it, paste the code in the ``HeadInclude`` section of the poki HTML5 export preset. 
 
-![SiteLock Code](./addons/poki-sdk/images/poki_sitelock.png)
+[<img src="./addons/poki-sdk/images/poki_sitelock.png" width="800"/>](./addons/poki-sdk/images/poki_sitelock.png)
 
 `Please note that you have to include your site lock code within the script tag.`
 
