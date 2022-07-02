@@ -67,7 +67,7 @@ PokiSDK.shareableURL(params) #-- in JS it's PokiSDK.shareableURL({}).then(url =>
 #Signals available from PokiSDK 
 
 #triggered as soon as the commercial break ad is played.
-commercial_break_done   
+commercial_break_done()
 
 #triggered once the reward ad has finished. response indicates if the ad was successfully played or not.
 rewarded_break_done(response) 
