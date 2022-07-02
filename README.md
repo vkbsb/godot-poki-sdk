@@ -61,7 +61,7 @@ The extension creates the following files in your project directory.
 [<img src="./addons/poki-sdk/images/project_autoload.png" width="800"/>](./addons/poki-sdk/images/project_autoload.png)
 
 ## 3.Usage 
-In your node scripts, you will be able to use PokiSDK to interact with the platform. The following are the functions that are available for you to use from your game scripts. Checkout the demo.gd for example usage.
+In your node scripts, you will be able to use PokiSDK to interact with the platform. The following are the functions that are available for you to use from your game scripts. Checkout the [demo.gd](./addons/demo/demo.gd) for example usage.
 
 ```python
 PokiSDK.gameplayStart() #-- in JS it's PokiSDK.gameplayStart()
@@ -102,7 +102,7 @@ This ad type is used for optional rewarded actions, for example watching an ad v
 - connect your script to `rewarded_break_done` signal on `PokiSDK`
 - The `rewarded_break_done` signal provides a boolean parameter which indicates if the reward should be given or not.
 
-Check out [demo.gd](./demo.gd) for reference. 
+Check out [demo.gd](./addons/demo/demo.gd) for reference. 
 
 
 **SiteLock**
