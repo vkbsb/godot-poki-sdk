@@ -5,6 +5,8 @@ func _ready():
 	PokiSDK.connect("commercial_break_done", self, "on_commercial_break_done")
 	PokiSDK.connect("rewarded_break_done", self, "on_reward_break_done")
 	PokiSDK.connect("shareable_url_ready", self, "on_shareable_url_ready")
+	
+	$Label3.text = str(PokiSDK.isAdBlocked())
 	pass # Replace with function body.
 
 func on_reward_break_done(success):

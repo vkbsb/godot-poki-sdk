@@ -58,3 +58,7 @@ func shareableURL(obj:Dictionary):
 
 func on_shareable_url(url):
 	emit_signal("shareable_url_ready", url[0])
+	
+func isAdBlocked():
+	var ret = sdk_handle.isAdBlocked()
+	return ret

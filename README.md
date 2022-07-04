@@ -64,6 +64,7 @@ The extension creates the following files in your project directory.
 In your node scripts, you will be able to use PokiSDK to interact with the platform. The following are the functions that are available for you to use from your game scripts. Checkout the [demo.gd](./addons/demo/demo.gd) for example usage.
 
 ```python
+PokiSDK.isAdBlocked() #-- in JS it's PokiSDK.isAdBlocked()
 PokiSDK.gameplayStart() #-- in JS it's PokiSDK.gameplayStart()
 PokiSDK.gameplayStop() #-- in JS it's PokiSDK.gameplayStop()
 PokiSDK.commercialBreak() #-- in JS it's PokiSDK.commercialBreak()
