@@ -7,6 +7,8 @@ func _ready():
 	PokiSDK.connect("shareable_url_ready", self, "on_shareable_url_ready")
 	
 	$Label3.text = str(PokiSDK.isAdBlocked())
+	
+	$AudioStreamPlayer.play()
 	pass # Replace with function body.
 
 func on_reward_break_done(success):
@@ -16,16 +18,22 @@ func on_reward_break_done(success):
 	else:
 		$Label.text = "No Reward."
 	PokiSDK.gameplayStart()
+	#resume the game audio.
+	$AudioStreamPlayer.stream_paused = false
 	
 func on_commercial_break_done():
 	print("Commercial break done")
 	PokiSDK.gameplayStart()
+	#resume the game audio
+	$AudioStreamPlayer.stream_paused = false
 
 func on_shareable_url_ready(url):
 	print("URL: ", url)
 	$Label.text = url
 	
 func _on_Button_pressed():
+	#pause any audio running in game. 
+	$AudioStreamPlayer.stream_paused = true
 	PokiSDK.gameplayStop()
 	PokiSDK.commercialBreak()
 	pass # Replace with function body.
@@ -36,6 +44,8 @@ func _on_Button2_pressed():
 
 
 func _on_Button3_pressed():
+	#pause any audio running in game. 
+	$AudioStreamPlayer.stream_paused = true
 	PokiSDK.gameplayStop()
 	PokiSDK.rewardedBreak()
 	pass # Replace with function body.
