@@ -21,15 +21,19 @@ You can search and install the plugin directly from the official Asset Library.
 This is the easiest way to get started.
 
 1) Switch to the AssetLib tab (1) and search for poki (2) using the search bar. Once you find it (3) click on it. 
+
 [<img src="./addons/poki-sdk/images/plugin_search.png" width="400"/>](./addons/poki-sdk/images/plugin_search.png)
 
-2) You will be shown the details of the plugin. Click the download button. 
+2) You will be shown the details of the plugin. Click the download button.
+
 [<img src="./addons/poki-sdk/images/plugin_download.png" width="400"/>](./addons/poki-sdk/images/plugin_download.png)
 
 3) Once the download is finished, you will be shown the install dialog box. Click on the install button. 
+
 [<img src="./addons/poki-sdk/images/plugin_install.png" width="400"/>](./addons/poki-sdk/images/plugin_install.png)
 
 4) If everything goes well, you will see a dialog box showing that you have successfully installed the plugin. 
+
 [<img src="./addons/poki-sdk/images/plugin_installed.png" width="400"/>](./addons/poki-sdk/images/plugin_installed.png)
 
 
