@@ -16,7 +16,7 @@ Please note that Poki is a curated platform, you will need to submit your game t
 ## 1.Installation
 There are two ways to download and install the plugin
 
-### AssetLibrary
+### From AssetLibrary
 You can search and install the plugin directly from the official Asset Library.
 This is the easiest way to get started.
 
