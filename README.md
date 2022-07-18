@@ -86,7 +86,7 @@ PokiSDK.isAdBlocked() #-- in JS : PokiSDK.isAdBlocked()
 PokiSDK.gameplayStart() #-- in JS : PokiSDK.gameplayStart()
 PokiSDK.gameplayStop() #-- in JS : PokiSDK.gameplayStop()
 PokiSDK.commercialBreak() #-- in JS : PokiSDK.commercialBreak()
-PokiSDK.rewardBreak() #-- in JS : PokiSDK.rewardedBreak()
+PokiSDK.rewardedBreak() #-- in JS : PokiSDK.rewardedBreak()
 PokiSDK.shareableURL(params) #-- in JS : PokiSDK.shareableURL({}).then(url => {})
 
 #Signals available from the PokiSDK 
