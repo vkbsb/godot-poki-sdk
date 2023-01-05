@@ -21,8 +21,8 @@ func on_reward_break_done(success):
 	#resume the game audio.
 	$AudioStreamPlayer.stream_paused = false
 	
-func on_commercial_break_done():
-	print("Commercial break done")
+func on_commercial_break_done(response):
+	print("Commercial break done", response)
 	PokiSDK.gameplayStart()
 	#resume the game audio
 	$AudioStreamPlayer.stream_paused = false

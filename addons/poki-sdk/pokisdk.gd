@@ -5,7 +5,7 @@ var _cb_commercial_break
 var _cb_reward_break
 var _cb_shareable_url
 
-signal commercial_break_done 
+signal commercial_break_done(response) 
 signal rewarded_break_done(response)
 signal shareable_url_ready(url)
 
@@ -34,9 +34,9 @@ func commercialBreak():
 		return
 	sdk_handle.commercialBreak().then(_cb_commercial_break)
 	
-func on_commercial_break():
+func on_commercial_break(args):
 	print("Commercial break done!")
-	emit_signal("commercial_break_done")
+	emit_signal("commercial_break_done", args[0])
 
 func rewardedBreak():
 	if not sdk_handle:
