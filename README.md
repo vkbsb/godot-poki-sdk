@@ -1,7 +1,7 @@
 # Poki plugin for Godot 3.4
 `Note: This plugin works for Godot 3.4 and above`
 
-This plugin is designed to help the integration of the [PokiSDK](https://sdk.poki.com/html5/) into your Godot(3.4.x) game. It is possible to build the integration yourself by creating a custom html shell by modifying the [default template](https://github.com/godotengine/godot/blob/master/misc/dist/html/full-size.html), but this plugin makes it easier and faster for you to do the same. 
+This plugin is designed to help the integration of the [PokiSDK](https://sdk.poki.com) into your Godot(3.4.x) game. It is possible to build the integration yourself by creating a custom html shell by modifying the [default template](https://github.com/godotengine/godot/blob/master/misc/dist/html/full-size.html), but this plugin makes it easier and faster for you to do the same. 
 
 This plugin provides:
 - An export preset for the Poki platform
@@ -9,9 +9,9 @@ This plugin provides:
 - PokiSDK singleton for GDScript integration
 - A demo scene showcasing usage
 
-Once you install the plugin and reload the project, you will see a new preset for HTML5 platform called Poki. This will provide the core integration needed for the [PokiSDK](https://sdk.poki.com/html5/) by using a custom html shell. You will be able to make api calls using the `PokiSDK` singleton that will be autoloaded for you. 
+Once you install the plugin and reload the project, you will see a new preset for HTML5 platform called Poki. This will provide the core integration needed for the [PokiSDK](https://sdk.poki.com) by using a custom html shell. You will be able to make api calls using the `PokiSDK` singleton that will be autoloaded for you. 
 
-Please note that Poki is a curated platform, you will need to submit your game through [Poki for Developers](https://developers.poki.com/) first, and only work on the sdk integration after the game is approved.
+Please note that Poki is a curated platform, you will need to submit your game through [Poki for Developers](https://developers.poki.com) first, and only work on the sdk integration after the game is approved.
 
 ## 1.Installation
 There are two ways to download and install the plugin
