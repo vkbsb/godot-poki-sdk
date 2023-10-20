@@ -62,3 +62,8 @@ func on_shareable_url(url):
 func isAdBlocked():
 	var ret = sdk_handle.isAdBlocked()
 	return ret
+	
+func enableTracking():
+	if not sdk_handle:
+		return 
+	sdk_handle.enableTracking()
