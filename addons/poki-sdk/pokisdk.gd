@@ -63,7 +63,7 @@ func isAdBlocked():
 	var ret = sdk_handle.isAdBlocked()
 	return ret
 	
-func enableTracking():
+func enableEventTracking():
 	if not sdk_handle:
-		return 
-	sdk_handle.enableTracking()
+		return
+	sdk_handle.enableEventTracking()
