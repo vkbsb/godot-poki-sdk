@@ -1,7 +1,7 @@
-# Poki plugin for Godot 3.4
-`Note: This plugin works for Godot 3.4 and above`
+# Poki plugin for Godot 4.3
+`Note: This plugin works for Godot 4.3 and above`
 
-This plugin is designed to help the integration of the [PokiSDK](https://sdk.poki.com/html5/) into your Godot(3.4.x) game. It is possible to build the integration yourself by creating a custom html shell by modifying the [default template](https://github.com/godotengine/godot/blob/master/misc/dist/html/full-size.html), but this plugin makes it easier and faster for you to do the same. 
+This plugin is designed to help the integration of the [PokiSDK](https://sdk.poki.com/html5/) into your Godot(4.3.x) game. It is possible to build the integration yourself by creating a custom html shell by modifying the [default template](https://github.com/godotengine/godot/blob/master/misc/dist/html/full-size.html), but this plugin makes it easier and faster for you to do the same. 
 
 This plugin provides:
 - An export preset for the Poki platform
