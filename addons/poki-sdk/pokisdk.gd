@@ -11,7 +11,7 @@ signal shareable_url_ready(url)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	if OS.has_feature("JavaScriptBridge") == false:
+	if OS.has_feature("web") == false:
 		return
 		
 	sdk_handle = JavaScriptBridge.get_interface("PokiSDK")
@@ -60,6 +60,8 @@ func on_shareable_url(url):
 	emit_signal("shareable_url_ready", url[0])
 	
 func isAdBlocked():
+	if not sdk_handle:
+		return
 	var ret = sdk_handle.isAdBlocked()
 	return ret
 	
