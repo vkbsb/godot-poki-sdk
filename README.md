@@ -76,42 +76,125 @@ The extension creates the following files in your project directory :
 
 [<img src="./addons/poki-sdk/images/project_autoload.png" width="800"/>](./addons/poki-sdk/images/project_autoload.png)
 
-## 3.Usage 
-In your node scripts, you will be able to use `PokiSDK` to interact with the platform. The following are the functions that are available for you to use from your game scripts. Checkout the [demo.gd](./addons/demo/demo.gd) for example usage.
+## 3. Usage
+The plugin autoloads a singleton called `PokiSDK`. In Godot scripts you call it directly, while the exported HTML shell initializes the underlying browser SDK before the Godot engine starts.
 
-Note : to fully understand the difference between a commercialBreak and a rewardedBreak, or other events below, please refer to the [PokiSDK events documentation](https://sdk.poki.com/sdk-documentation.html#definition-of-events).
+### Startup
+The exported shell is the only place where the browser `PokiSDK.init()` call happens. It runs before the Godot engine starts, so the Godot autoload does **not** expose a public `PokiSDK.init()` method.
 
-```python
-PokiSDK.isAdBlocked() #-- in JS : PokiSDK.isAdBlocked()
-PokiSDK.gameplayStart() #-- in JS : PokiSDK.gameplayStart()
-PokiSDK.gameplayStop() #-- in JS : PokiSDK.gameplayStop()
-PokiSDK.commercialBreak() #-- in JS : PokiSDK.commercialBreak()
-PokiSDK.rewardedBreak() #-- in JS : PokiSDK.rewardedBreak()
-PokiSDK.shareableURL(params) #-- in JS : PokiSDK.shareableURL({}).then(url => {})
+By default, the shell enables Poki debug mode on `localhost` and `127.0.0.1`. You can still override that at runtime with `PokiSDK.setDebug(false)` or enable logging later with `PokiSDK.setLogging(true)`.
 
-#Signals available from the PokiSDK 
+Note: to fully understand the difference between `commercialBreak()` and `rewardedBreak()`, refer to the [PokiSDK events documentation](https://sdk.poki.com/sdk-documentation.html#definition-of-events).
 
-#Triggered as soon as the commercial break is over.
-commercial_break_done()
+### Available methods
+Lifecycle and monetization:
 
-#Triggered once the rewarded break has finished. Response indicates if the ad was successfully played or not.
-rewarded_break_done(response) 
+```gdscript
+PokiSDK.gameLoadingFinished()
+PokiSDK.gameplayStart()
+PokiSDK.gameplayStop()
+PokiSDK.commercialBreak()
+PokiSDK.commercialBreak(Callable(self, "_on_ad_started"))
+PokiSDK.rewardedBreak()
+PokiSDK.rewardedBreak(Callable(self, "_on_ad_started"))
+PokiSDK.rewardedBreak({
+	"size": "small", # accepted values: small, medium, large
+	"onStart": Callable(self, "_on_ad_started"),
+})
+```
 
-#Triggered once the shareableURL is ready for use.
+Sharing, URL helpers, and accounts:
+
+```gdscript
+PokiSDK.shareableURL({
+	"id": "demo-user",
+	"type": "reward",
+	"score": 42,
+})
+PokiSDK.getURLParam("id")
+PokiSDK.getLanguage()
+PokiSDK.getUser()
+PokiSDK.getToken()
+PokiSDK.login()
+```
+
+Diagnostics, analytics, and playtest helpers:
+
+```gdscript
+PokiSDK.captureError("Something went wrong")
+PokiSDK.setDebug(true)
+PokiSDK.setLogging(true)
+PokiSDK.enableEventTracking(123)
+PokiSDK.openExternalLink("https://developers.poki.com/")
+PokiSDK.movePill(50, -100)
+PokiSDK.measure("demo", "button", "clicked")
+PokiSDK.playtestSetCanvas(canvas_handle)
+PokiSDK.playtestSetCanvas([canvas_a, canvas_b])
+```
+
+### Signals
+Promise-based methods resolve through Godot signals:
+
+```gdscript
+commercial_break_done(response)
+commercial_break_failed(error)
+
+rewarded_break_done(response)
+rewarded_break_failed(error)
+
 shareable_url_ready(url)
+shareable_url_failed(error)
+
+user_ready(user_dict_or_null)
+user_failed(error)
+
+token_ready(token_or_null)
+token_failed(error)
+
+login_done()
+login_failed(error)
 ```
 
-Please notice that you will not see an equivalent to the ``PokiSDK.setDebug(value)`` function, because the extension sets this automatically based on where the game is hosted.
-```
-________________________________________________________
-| HostName                    | PokiSDK Debug           |
-|_____________________________|_________________________|
-| localhost                   | PokiSDK.setDebug(true)  |
-| 127.0.0.1                   | PokiSDK.setDebug(true)  |
-| //any other hostname        | PokiSDK.setDebug(false) |
----------------------------------------------------------
+The `User` payload is exposed as a Godot `Dictionary`:
 
-Note: You can change this behaviour by editing the exported html file. 
+```gdscript
+{
+	"username": "TestUser",
+	"avatarUrl": "https://a.poki-cdn.com/img/placeholder_gradient.png",
+}
+```
+
+### Examples
+Basic ad flow:
+
+```gdscript
+func _on_play_again_pressed():
+	$AudioStreamPlayer.stream_paused = true
+	PokiSDK.gameplayStop()
+	PokiSDK.commercialBreak(Callable(self, "_on_ad_started"))
+
+func _on_commercial_break_done(_response):
+	$AudioStreamPlayer.stream_paused = false
+	PokiSDK.gameplayStart()
+```
+
+Account flow:
+
+```gdscript
+func _ready():
+	PokiSDK.connect("user_ready", Callable(self, "_on_user_ready"))
+	PokiSDK.getUser()
+
+func _on_login_button_pressed():
+	PokiSDK.login()
+```
+
+Move the Poki Pill, track a custom event, and open an approved external link:
+
+```gdscript
+PokiSDK.movePill(50, -100)
+PokiSDK.measure("demo", "ui", "open_store")
+PokiSDK.openExternalLink("https://developers.poki.com/")
 ```
 
 

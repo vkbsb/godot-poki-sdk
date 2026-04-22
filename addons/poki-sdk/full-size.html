@@ -199,26 +199,114 @@ function startGameLoading() {
 					statusProgress.removeAttribute('max');
 				}
 			},
-		}).then(() => {
-			setStatusMode('hidden');
-			initializing = false;
-			PokiSDK.gameLoadingFinished();
-		}, displayFailureNotice);
-	}
-}
-
-		//Poki SDK Init.
-		PokiSDK.init().then(()=>{
-			startGameLoading()
-		}).catch(()=>{
-			startGameLoading()
-		})
-
-		let hn = window.location.hostname
-		if(hn == "localhost" || hn == "127.0.0.1"){
-			PokiSDK.setDebug(true)
+			}).then(() => {
+				setStatusMode('hidden');
+				initializing = false;
+				window.PokiGodotBridge.gameLoadingFinished();
+			}, displayFailureNotice);
 		}
-		
-		</script>
-	</body>
-</html>
+	}
+
+			const PokiSDKRaw = window.PokiSDK;
+			const POKI_LOCALHOSTS = new Set(['localhost', '127.0.0.1']);
+
+			function createPokiGodotBridge() {
+				const initOptions = {};
+				if (POKI_LOCALHOSTS.has(window.location.hostname)) {
+					initOptions.debug = true;
+				}
+				const ready = PokiSDKRaw.init(initOptions).then(() => undefined);
+
+				return {
+					ready,
+					rewardedBreak(...args) {
+						return PokiSDKRaw.rewardedBreak(...args);
+					},
+					commercialBreak(...args) {
+						return PokiSDKRaw.commercialBreak(...args);
+					},
+					displayAd(...args) {
+						return PokiSDKRaw.displayAd(...args);
+					},
+					destroyAd(...args) {
+						return PokiSDKRaw.destroyAd(...args);
+					},
+					shareableURL(...args) {
+						return PokiSDKRaw.shareableURL(...args);
+					},
+					getURLParam(...args) {
+						return PokiSDKRaw.getURLParam(...args);
+					},
+					getLanguage(...args) {
+						return PokiSDKRaw.getLanguage(...args);
+					},
+					getUser(...args) {
+						return PokiSDKRaw.getUser(...args);
+					},
+					getToken(...args) {
+						return PokiSDKRaw.getToken(...args);
+					},
+					login(...args) {
+						return PokiSDKRaw.login(...args);
+					},
+					captureError(...args) {
+						return PokiSDKRaw.captureError(...args);
+					},
+					gameLoadingFinished(...args) {
+						return PokiSDKRaw.gameLoadingFinished(...args);
+					},
+					gameplayStart(...args) {
+						return PokiSDKRaw.gameplayStart(...args);
+					},
+					gameplayStop(...args) {
+						return PokiSDKRaw.gameplayStop(...args);
+					},
+					setDebug(...args) {
+						return PokiSDKRaw.setDebug(...args);
+					},
+					setLogging(...args) {
+						return PokiSDKRaw.setLogging(...args);
+					},
+					enableEventTracking(...args) {
+						return PokiSDKRaw.enableEventTracking(...args);
+					},
+					openExternalLink(...args) {
+						return PokiSDKRaw.openExternalLink(...args);
+					},
+					playtestSetCanvas(...args) {
+						return PokiSDKRaw.playtestSetCanvas(...args);
+					},
+					playtestCaptureHtmlOnce(...args) {
+						return PokiSDKRaw.playtestCaptureHtmlOnce(...args);
+					},
+					playtestCaptureHtmlForce(...args) {
+						return PokiSDKRaw.playtestCaptureHtmlForce(...args);
+					},
+					playtestCaptureHtmlOn(...args) {
+						return PokiSDKRaw.playtestCaptureHtmlOn(...args);
+					},
+					playtestCaptureHtmlOff(...args) {
+						return PokiSDKRaw.playtestCaptureHtmlOff(...args);
+					},
+					movePill(...args) {
+						return PokiSDKRaw.movePill(...args);
+					},
+					measure(...args) {
+						return PokiSDKRaw.measure(...args);
+					},
+					isAdBlocked(...args) {
+						return PokiSDKRaw.isAdBlocked(...args);
+					},
+				};
+			}
+
+			window.PokiGodotBridge = createPokiGodotBridge();
+			window.PokiGodotBridge.ready.then(() => {
+				startGameLoading();
+			}).catch(() => {
+				startGameLoading();
+			});
+			
+			</script>
+		</body>
+	</html>
