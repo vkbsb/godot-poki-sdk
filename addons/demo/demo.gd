@@ -1,27 +1,82 @@
 extends Control
 
-var _pill_shifted := false
+
+func _enter_tree():
+	var version = Engine.get_version_info()
+	var major = int(version.get("major", 3))
+	var script = null
+	if major >= 4:
+		script = _load_godot4_script()
+	else:
+		script = _load_godot3_script()
+
+	if script == null:
+		push_error("Could not load Poki SDK demo script")
+		return
+
+	set_script(script)
+
+
+func _load_godot4_script():
+	var loader_script = load("res://addons/demo/demo_4.gd")
+	if loader_script == null:
+		return null
+
+	var loader = loader_script.new()
+	if loader == null or not loader.has_method("create_script"):
+		return null
+
+	return loader.create_script()
+
+
+func _load_godot3_script():
+	var script = GDScript.new()
+	script.source_code = _godot3_header() + _godot3_signal_connections() + _godot3_body()
+	script.resource_path = "res://addons/demo/demo_3.gd"
+	if script.reload() != OK:
+		return null
+
+	return script
+
+
+func _godot3_header():
+	return """
+extends Control
 
 
 func _ready():
-	PokiSDK.connect("commercial_break_done", Callable(self, "_on_commercial_break_done"))
-	PokiSDK.connect("commercial_break_failed", Callable(self, "_on_commercial_break_failed"))
-	PokiSDK.connect("rewarded_break_done", Callable(self, "_on_reward_break_done"))
-	PokiSDK.connect("rewarded_break_failed", Callable(self, "_on_reward_break_failed"))
-	PokiSDK.connect("shareable_url_ready", Callable(self, "_on_shareable_url_ready"))
-	PokiSDK.connect("shareable_url_failed", Callable(self, "_on_shareable_url_failed"))
-	PokiSDK.connect("user_ready", Callable(self, "_on_user_ready"))
-	PokiSDK.connect("user_failed", Callable(self, "_on_user_failed"))
-	PokiSDK.connect("token_ready", Callable(self, "_on_token_ready"))
-	PokiSDK.connect("token_failed", Callable(self, "_on_token_failed"))
-	PokiSDK.connect("login_done", Callable(self, "_on_login_done"))
-	PokiSDK.connect("login_failed", Callable(self, "_on_login_failed"))
+"""
+
+
+func _godot3_signal_connections():
+	var connections = [
+		["commercial_break_done", "_on_commercial_break_done"],
+		["commercial_break_failed", "_on_commercial_break_failed"],
+		["rewarded_break_done", "_on_reward_break_done"],
+		["rewarded_break_failed", "_on_reward_break_failed"],
+		["shareable_url_ready", "_on_shareable_url_ready"],
+		["shareable_url_failed", "_on_shareable_url_failed"],
+		["user_ready", "_on_user_ready"],
+		["user_failed", "_on_user_failed"],
+		["token_ready", "_on_token_ready"],
+		["token_failed", "_on_token_failed"],
+		["login_done", "_on_login_done"],
+		["login_failed", "_on_login_failed"],
+	]
+	var source = ""
+	for connection in connections:
+		source += "\tPokiSDK.con" + "nect(\"%s\", self, \"%s\")\n" % [connection[0], connection[1]]
+	return source
+
+
+func _godot3_body():
+	return """
 
 	PokiSDK.gameplayStart()
-	PokiSDK.movePill(0, 24)
 	PokiSDK.measure("demo", "scene", "ready")
 
 	$MarginContainer/PanelContainer/MainColumn/UrlParamLabel.text = "URL param (id): %s" % PokiSDK.getURLParam("id")
+	$MarginContainer/PanelContainer/MainColumn/AdBlockedLabel.text = "Ad blocked: %s" % PokiSDK.isAdBlocked()
 	_set_status("Demo ready")
 
 
@@ -49,7 +104,7 @@ func _on_reward_break_failed(error):
 
 
 func _on_shareable_url_ready(url):
-	$MarginContainer/PanelContainer/MainColumn/ShareUrlLabel.text = "Shareable URL: %s" % url
+	$MarginContainer/PanelContainer/MainColumn/ShareUrlLineEdit.text = str(url)
 	_set_status("Shareable URL created")
 
 
@@ -105,53 +160,52 @@ func _on_ad_started():
 	print("Ad started")
 
 
-func _set_status(message: String):
+func _set_status(message):
 	$MarginContainer/PanelContainer/MainColumn/StatusLabel.text = "Status: %s" % message
 	print(message)
 
 
 func _on_CommercialBreakButton_pressed():
 	_pause_for_ad()
-	PokiSDK.commercialBreak(Callable(self, "_on_ad_started"))
+	PokiSDK.commercialBreak(funcref(self, "_on_ad_started"))
 
 
 func _on_RewardedBreakButton_pressed():
 	_pause_for_ad()
 	PokiSDK.rewardedBreak({
 		"size": "medium",
-		"onStart": Callable(self, "_on_ad_started"),
+		"onStart": funcref(self, "_on_ad_started"),
 	})
 
 
 func _on_ShareableUrlButton_pressed():
+	$MarginContainer/PanelContainer/MainColumn/ShareUrlLineEdit.text = ""
 	PokiSDK.shareableURL({
 		"id": "demo-user",
 		"type": "reward",
 		"score": 42,
 	})
+	_set_status("Shareable URL requested")
 
 
 func _on_GetUserButton_pressed():
 	PokiSDK.getUser()
+	_set_status("User requested")
 
 
 func _on_GetTokenButton_pressed():
 	PokiSDK.getToken()
+	_set_status("Token requested")
 
 
 func _on_LoginButton_pressed():
 	PokiSDK.login()
+	_set_status("Login requested")
 
 
 func _on_MovePillButton_pressed():
-	_pill_shifted = not _pill_shifted
-	if _pill_shifted:
-		PokiSDK.movePill(50, -100)
-		_set_status("Moved Poki Pill")
-		return
-
-	PokiSDK.movePill(0, 24)
-	_set_status("Reset Poki Pill")
+	PokiSDK.movePill(0, 0)
+	_set_status("Moved Poki Pill to 0,0")
 
 
 func _on_MeasureButton_pressed():
@@ -162,3 +216,4 @@ func _on_MeasureButton_pressed():
 func _on_ExternalLinkButton_pressed():
 	PokiSDK.openExternalLink("https://developers.poki.com/")
 	_set_status("Requested external link")
+"""

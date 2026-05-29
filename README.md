@@ -1,15 +1,14 @@
-# Poki plugin for Godot 4.3
-`Note: This plugin works for Godot 4.3 and above`
+# Poki plugin for Godot 3.4+ and Godot 4
+`Note: The runtime bridge works in Godot 3.4+ and Godot 4.x.`
 
-This plugin is designed to help the integration of the [PokiSDK](https://sdk.poki.com/html5/) into your Godot(4.3.x) game. It is possible to build the integration yourself by creating a custom html shell by modifying the [default template](https://github.com/godotengine/godot/blob/master/misc/dist/html/full-size.html), but this plugin makes it easier and faster for you to do the same. 
+This plugin is designed to help the integration of the [PokiSDK](https://sdk.poki.com/html5/) into your Godot game. It is possible to build the integration yourself by creating a custom html shell by modifying the default template, but this plugin makes it easier and faster to do the same.
 
 This plugin provides:
-- An export preset for the Poki platform
-- A custom html shell 
+- A custom html shell
 - PokiSDK singleton for GDScript integration
 - A demo scene showcasing usage
 
-Once you install the plugin and reload the project, you will see a new preset for HTML5 platform called Poki. This will provide the core integration needed for the [PokiSDK](https://sdk.poki.com/html5/) by using a custom html shell. You will be able to make api calls using the `PokiSDK` singleton that will be autoloaded for you. 
+The runtime files in `addons/poki-sdk` are parser-safe in both Godot 3 and Godot 4. Godot's editor-plugin annotation is not cross-version compatible (`tool` in Godot 3, `@tool` in Godot 4), so the checked-in `addons/poki-sdk/plugin.gd` is only a neutral placeholder. Add the autoload/export preset manually, or copy the matching editor-plugin template before enabling the plugin.
 
 Please note that Poki is a curated platform, you will need to submit your game through [Poki for Developers](https://developers.poki.com/) first, and only work on the sdk integration after the game is approved.
 
@@ -45,11 +44,41 @@ Or download the source code and copy the `poki-sdk` directory into your project'
 git clone https://github.com/vkbsb/godot-poki-sdk.git
 ```
 
-1. Once this is done, you can launch the plugin manager in Godot editor under project settings.
+### Manual setup
+Add `res://addons/poki-sdk/pokisdk.gd` as an autoload named `PokiSDK`.
+
+Create a Poki export preset:
+- Godot 3.4+: platform `HTML5`
+- Godot 4.x: platform `Web`
+
+Set the export preset's custom HTML shell to:
+
+```text
+res://addons/poki-sdk/full-size.html
+```
+
+### Optional editor auto-setup
+Before enabling the plugin, copy the matching template from inside the addon package into `addons/poki-sdk`:
+
+Godot 3.4+:
+
+```sh
+cp addons/poki-sdk/editor-plugin-templates/godot3/plugin.cfg addons/poki-sdk/plugin.cfg
+cp addons/poki-sdk/editor-plugin-templates/godot3/plugin.gd.txt addons/poki-sdk/plugin.gd
+```
+
+Godot 4.x:
+
+```sh
+cp addons/poki-sdk/editor-plugin-templates/godot4/plugin.cfg addons/poki-sdk/plugin.cfg
+cp addons/poki-sdk/editor-plugin-templates/godot4/plugin.gd.txt addons/poki-sdk/plugin.gd
+```
+
+1. Launch the plugin manager in Godot editor under project settings.
 
 [<img src="./addons/poki-sdk/images/project_menu.png" width="400"/>](./addons/poki-sdk/images/project_menu.png)
 
-2. Switch to the plugins tab to make sure that the plugin is enabled. 
+2. Switch to the plugins tab to make sure that the plugin is enabled.
 
 [<img src="./addons/poki-sdk/images/project_settings.png" width="450"/>](./addons/poki-sdk/images/project_settings.png)
 
@@ -60,7 +89,7 @@ git clone https://github.com/vkbsb/godot-poki-sdk.git
       
 
 ## 2.Export preset
-Once you have finished the installation, you need to export your preset. 
+Once you have finished the installation, you need to export your preset.
 
 1. Open the export dialog
 
@@ -70,14 +99,14 @@ Once you have finished the installation, you need to export your preset.
 
 [<img src="./addons/poki-sdk/images/poki_export_preset.png" width="800"/>](./addons/poki-sdk/images/poki_export_preset.png)
 
-The extension creates the following files in your project directory :
+When using the optional editor auto-setup, the extension:
 - Adds a new preset called `Poki` to export config in project.
 - Adds an automatically loaded singleton called `PokiSDK` for the game script to use.
 
 [<img src="./addons/poki-sdk/images/project_autoload.png" width="800"/>](./addons/poki-sdk/images/project_autoload.png)
 
 ## 3. Usage
-The plugin autoloads a singleton called `PokiSDK`. In Godot scripts you call it directly, while the exported HTML shell initializes the underlying browser SDK before the Godot engine starts.
+Add or autoload a singleton called `PokiSDK`. In Godot scripts you call it directly, while the exported HTML shell initializes the underlying browser SDK before the Godot engine starts.
 
 ### Startup
 The exported shell is the only place where the browser `PokiSDK.init()` call happens. It runs before the Godot engine starts, so the Godot autoload does **not** expose a public `PokiSDK.init()` method.
@@ -94,11 +123,26 @@ PokiSDK.gameLoadingFinished()
 PokiSDK.gameplayStart()
 PokiSDK.gameplayStop()
 PokiSDK.commercialBreak()
-PokiSDK.commercialBreak(Callable(self, "_on_ad_started"))
 PokiSDK.rewardedBreak()
-PokiSDK.rewardedBreak(Callable(self, "_on_ad_started"))
 PokiSDK.rewardedBreak({
 	"size": "small", # accepted values: small, medium, large
+})
+```
+
+Callbacks use the engine's native callback type:
+
+```gdscript
+# Godot 3.4+
+PokiSDK.commercialBreak(funcref(self, "_on_ad_started"))
+PokiSDK.rewardedBreak({
+	"size": "small",
+	"onStart": funcref(self, "_on_ad_started"),
+})
+
+# Godot 4.x
+PokiSDK.commercialBreak(Callable(self, "_on_ad_started"))
+PokiSDK.rewardedBreak({
+	"size": "small",
 	"onStart": Callable(self, "_on_ad_started"),
 })
 ```
@@ -171,7 +215,7 @@ Basic ad flow:
 func _on_play_again_pressed():
 	$AudioStreamPlayer.stream_paused = true
 	PokiSDK.gameplayStop()
-	PokiSDK.commercialBreak(Callable(self, "_on_ad_started"))
+	PokiSDK.commercialBreak()
 
 func _on_commercial_break_done(_response):
 	$AudioStreamPlayer.stream_paused = false
@@ -179,6 +223,19 @@ func _on_commercial_break_done(_response):
 ```
 
 Account flow:
+
+Godot 3.4+:
+
+```gdscript
+func _ready():
+	PokiSDK.connect("user_ready", self, "_on_user_ready")
+	PokiSDK.getUser()
+
+func _on_login_button_pressed():
+	PokiSDK.login()
+```
+
+Godot 4.x:
 
 ```gdscript
 func _ready():

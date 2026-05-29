@@ -78,7 +78,7 @@ body {
 		</style>
 		
 		<!-- Poki SDK include -->
-		<script src="//game-cdn.poki.com/scripts/v2/poki-sdk.js"></script>
+		<script src="https://game-cdn.poki.com/scripts/v2/poki-sdk.js"></script>
 		<script>
 			window.addEventListener('keydown', ev => {
 				if (['ArrowDown', 'ArrowUp', ' '].includes(ev.key)) {
@@ -100,7 +100,7 @@ body {
 		</noscript>
 
 		<div id="status">
-			<img id="status-splash" src="$GODOT_SPLASH" alt="">
+			<img id="status-splash" data-godot-splash="$GODOT_SPLASH" alt="">
 			<progress id="status-progress"></progress>
 			<div id="status-notice"></div>
 		</div>
@@ -108,13 +108,191 @@ body {
 		<script src="$GODOT_URL"></script>
 		<script>
 const GODOT_CONFIG = $GODOT_CONFIG;
-const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
+const GODOT_THREADS_ENABLED = typeof $GODOT_THREADS_ENABLED === 'undefined' ? false : $GODOT_THREADS_ENABLED;
 const engine = new Engine(GODOT_CONFIG);
+const POKI_LOCALHOSTS = new Set(['localhost', '127.0.0.1']);
+
+function createMissingPokiSDK() {
+	const missingSdkError = () => Promise.reject(new Error('Poki SDK script did not load.'));
+	const noop = () => undefined;
+	return {
+		init: missingSdkError,
+		rewardedBreak: missingSdkError,
+		commercialBreak: missingSdkError,
+		displayAd: missingSdkError,
+		destroyAd: noop,
+		shareableURL: missingSdkError,
+		getURLParam: () => null,
+		getLanguage: () => null,
+		getUser: missingSdkError,
+		getToken: missingSdkError,
+		login: missingSdkError,
+		captureError: noop,
+		gameLoadingFinished: noop,
+		gameplayStart: noop,
+		gameplayStop: noop,
+		setDebug: noop,
+		setLogging: noop,
+		enableEventTracking: noop,
+		openExternalLink: noop,
+		playtestSetCanvas: noop,
+		playtestCaptureHtmlOnce: noop,
+		playtestCaptureHtmlForce: noop,
+		playtestCaptureHtmlOn: noop,
+		playtestCaptureHtmlOff: noop,
+		movePill: noop,
+		measure: noop,
+		isAdBlocked: () => false,
+	};
+}
+
+const PokiSDKRaw = window.PokiSDK || createMissingPokiSDK();
+
+function createPokiGodotBridge() {
+	let godotCallback = null;
+
+	function dispatchToGodot(eventName, callbackId, payload) {
+		if (typeof godotCallback === 'function') {
+			godotCallback(eventName, callbackId, payload);
+		}
+	}
+
+	function callbackFromId(callbackId) {
+		if (typeof callbackId !== 'number' || callbackId < 0) {
+			return callbackId;
+		}
+		return () => dispatchToGodot('callback', callbackId, null);
+	}
+
+	function rewriteRewardedArgs(args) {
+		if (typeof args[0] === 'number') {
+			return [callbackFromId(args[0])];
+		}
+		if (args[0] && typeof args[0] === 'object' && typeof args[0].onStart === 'number') {
+			const params = { ...args[0] };
+			params.onStart = callbackFromId(params.onStart);
+			return [params];
+		}
+		return args;
+	}
+
+	const initOptions = {};
+	if (POKI_LOCALHOSTS.has(window.location.hostname)) {
+		initOptions.debug = true;
+	}
+	const ready = PokiSDKRaw.init(initOptions).then(() => undefined);
+
+	return {
+		ready,
+		setGodotCallback(callback) {
+			godotCallback = callback;
+		},
+		rewardedBreak(...args) {
+			return PokiSDKRaw.rewardedBreak(...rewriteRewardedArgs(args));
+		},
+		commercialBreak(...args) {
+			if (typeof args[0] === 'number') {
+				return PokiSDKRaw.commercialBreak(callbackFromId(args[0]));
+			}
+			return PokiSDKRaw.commercialBreak(...args);
+		},
+		displayAd(...args) {
+			if (typeof args[2] === 'number') {
+				const callbackId = args[2];
+				const hasCanDestroy = args[3] === true;
+				const hasDisplayRendered = args[4] === true;
+				const onCanDestroy = hasCanDestroy ? () => dispatchToGodot('display_can_destroy', callbackId, null) : null;
+				const onDisplayRendered = hasDisplayRendered ? (rendered) => dispatchToGodot('display_rendered', callbackId, rendered) : null;
+				return PokiSDKRaw.displayAd(args[0], args[1], onCanDestroy, onDisplayRendered);
+			}
+			return PokiSDKRaw.displayAd(...args);
+		},
+		destroyAd(...args) {
+			return PokiSDKRaw.destroyAd(...args);
+		},
+		shareableURL(...args) {
+			return PokiSDKRaw.shareableURL(...args);
+		},
+		getURLParam(...args) {
+			return PokiSDKRaw.getURLParam(...args);
+		},
+		getLanguage(...args) {
+			return PokiSDKRaw.getLanguage(...args);
+		},
+		getUser(...args) {
+			return PokiSDKRaw.getUser(...args);
+		},
+		getToken(...args) {
+			return PokiSDKRaw.getToken(...args);
+		},
+		login(...args) {
+			return PokiSDKRaw.login(...args);
+		},
+		captureError(...args) {
+			return PokiSDKRaw.captureError(...args);
+		},
+		gameLoadingFinished(...args) {
+			return PokiSDKRaw.gameLoadingFinished(...args);
+		},
+		gameplayStart(...args) {
+			return PokiSDKRaw.gameplayStart(...args);
+		},
+		gameplayStop(...args) {
+			return PokiSDKRaw.gameplayStop(...args);
+		},
+		setDebug(...args) {
+			return PokiSDKRaw.setDebug(...args);
+		},
+		setLogging(...args) {
+			return PokiSDKRaw.setLogging(...args);
+		},
+		enableEventTracking(...args) {
+			return PokiSDKRaw.enableEventTracking(...args);
+		},
+		openExternalLink(...args) {
+			return PokiSDKRaw.openExternalLink(...args);
+		},
+		playtestSetCanvas(...args) {
+			return PokiSDKRaw.playtestSetCanvas(...args);
+		},
+		playtestCaptureHtmlOnce(...args) {
+			return PokiSDKRaw.playtestCaptureHtmlOnce(...args);
+		},
+		playtestCaptureHtmlForce(...args) {
+			return PokiSDKRaw.playtestCaptureHtmlForce(...args);
+		},
+		playtestCaptureHtmlOn(...args) {
+			return PokiSDKRaw.playtestCaptureHtmlOn(...args);
+		},
+		playtestCaptureHtmlOff(...args) {
+			return PokiSDKRaw.playtestCaptureHtmlOff(...args);
+		},
+		movePill(...args) {
+			return PokiSDKRaw.movePill(...args);
+		},
+		measure(...args) {
+			return PokiSDKRaw.measure(...args);
+		},
+		isAdBlocked(...args) {
+			return PokiSDKRaw.isAdBlocked(...args);
+		},
+	};
+}
+
+window.PokiGodotBridge = createPokiGodotBridge();
 
 function startGameLoading() {
 	const statusOverlay = document.getElementById('status');
+	const statusSplash = document.getElementById('status-splash');
 	const statusProgress = document.getElementById('status-progress');
 	const statusNotice = document.getElementById('status-notice');
+
+	const splashImage = statusSplash.dataset.godotSplash;
+	if (splashImage && splashImage !== '$' + 'GODOT_SPLASH') {
+		statusSplash.src = splashImage;
+	} else {
+		statusSplash.remove();
+	}
 
 	let initializing = true;
 	let statusMode = '';
@@ -158,13 +336,21 @@ function startGameLoading() {
 		initializing = false;
 	}
 
-	const missing = Engine.getMissingFeatures({
-		threads: GODOT_THREADS_ENABLED,
-	});
+	function getMissingFeatures() {
+		if (typeof Engine.getMissingFeatures === 'function') {
+			return Engine.getMissingFeatures({
+				threads: GODOT_THREADS_ENABLED,
+			});
+		}
+		if (typeof Engine.isWebGLAvailable === 'function' && !Engine.isWebGLAvailable()) {
+			return ['WebGL'];
+		}
+		return [];
+	}
 
+	const missing = getMissingFeatures();
 	if (missing.length !== 0) {
 		if (GODOT_CONFIG['serviceWorker'] && GODOT_CONFIG['ensureCrossOriginIsolationHeaders'] && 'serviceWorker' in navigator) {
-			// There's a chance that installing the service worker would fix the issue
 			Promise.race([
 				navigator.serviceWorker.getRegistration().then((registration) => {
 					if (registration != null) {
@@ -172,141 +358,44 @@ function startGameLoading() {
 					}
 					return registration;
 				}).then(() => engine.installServiceWorker()),
-				// For some reason, `getRegistration()` can stall
 				new Promise((resolve) => {
 					setTimeout(() => resolve(), 2000);
 				}),
 			]).then(() => {
-				// Reload if there was no error.
 				window.location.reload();
 			}).catch((err) => {
 				console.error('Error while registering service worker:', err);
 			});
 		} else {
-			// Display the message as usual
 			const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
 			displayFailureNotice(missingMsg + missing.join('\n'));
 		}
-	} else {
-		setStatusMode('progress');
-		engine.startGame({
-			'onProgress': function (current, total) {
-				if (current > 0 && total > 0) {
-					statusProgress.value = current;
-					statusProgress.max = total;
-				} else {
-					statusProgress.removeAttribute('value');
-					statusProgress.removeAttribute('max');
-				}
-			},
-			}).then(() => {
-				setStatusMode('hidden');
-				initializing = false;
-				window.PokiGodotBridge.gameLoadingFinished();
-			}, displayFailureNotice);
-		}
+		return;
 	}
 
-			const PokiSDKRaw = window.PokiSDK;
-			const POKI_LOCALHOSTS = new Set(['localhost', '127.0.0.1']);
-
-			function createPokiGodotBridge() {
-				const initOptions = {};
-				if (POKI_LOCALHOSTS.has(window.location.hostname)) {
-					initOptions.debug = true;
-				}
-				const ready = PokiSDKRaw.init(initOptions).then(() => undefined);
-
-				return {
-					ready,
-					rewardedBreak(...args) {
-						return PokiSDKRaw.rewardedBreak(...args);
-					},
-					commercialBreak(...args) {
-						return PokiSDKRaw.commercialBreak(...args);
-					},
-					displayAd(...args) {
-						return PokiSDKRaw.displayAd(...args);
-					},
-					destroyAd(...args) {
-						return PokiSDKRaw.destroyAd(...args);
-					},
-					shareableURL(...args) {
-						return PokiSDKRaw.shareableURL(...args);
-					},
-					getURLParam(...args) {
-						return PokiSDKRaw.getURLParam(...args);
-					},
-					getLanguage(...args) {
-						return PokiSDKRaw.getLanguage(...args);
-					},
-					getUser(...args) {
-						return PokiSDKRaw.getUser(...args);
-					},
-					getToken(...args) {
-						return PokiSDKRaw.getToken(...args);
-					},
-					login(...args) {
-						return PokiSDKRaw.login(...args);
-					},
-					captureError(...args) {
-						return PokiSDKRaw.captureError(...args);
-					},
-					gameLoadingFinished(...args) {
-						return PokiSDKRaw.gameLoadingFinished(...args);
-					},
-					gameplayStart(...args) {
-						return PokiSDKRaw.gameplayStart(...args);
-					},
-					gameplayStop(...args) {
-						return PokiSDKRaw.gameplayStop(...args);
-					},
-					setDebug(...args) {
-						return PokiSDKRaw.setDebug(...args);
-					},
-					setLogging(...args) {
-						return PokiSDKRaw.setLogging(...args);
-					},
-					enableEventTracking(...args) {
-						return PokiSDKRaw.enableEventTracking(...args);
-					},
-					openExternalLink(...args) {
-						return PokiSDKRaw.openExternalLink(...args);
-					},
-					playtestSetCanvas(...args) {
-						return PokiSDKRaw.playtestSetCanvas(...args);
-					},
-					playtestCaptureHtmlOnce(...args) {
-						return PokiSDKRaw.playtestCaptureHtmlOnce(...args);
-					},
-					playtestCaptureHtmlForce(...args) {
-						return PokiSDKRaw.playtestCaptureHtmlForce(...args);
-					},
-					playtestCaptureHtmlOn(...args) {
-						return PokiSDKRaw.playtestCaptureHtmlOn(...args);
-					},
-					playtestCaptureHtmlOff(...args) {
-						return PokiSDKRaw.playtestCaptureHtmlOff(...args);
-					},
-					movePill(...args) {
-						return PokiSDKRaw.movePill(...args);
-					},
-					measure(...args) {
-						return PokiSDKRaw.measure(...args);
-					},
-					isAdBlocked(...args) {
-						return PokiSDKRaw.isAdBlocked(...args);
-					},
-				};
+	setStatusMode('progress');
+	engine.startGame({
+		'onProgress': function (current, total) {
+			if (current > 0 && total > 0) {
+				statusProgress.value = current;
+				statusProgress.max = total;
+			} else {
+				statusProgress.removeAttribute('value');
+				statusProgress.removeAttribute('max');
 			}
+		},
+	}).then(() => {
+		setStatusMode('hidden');
+		initializing = false;
+		window.PokiGodotBridge.gameLoadingFinished();
+	}, displayFailureNotice);
+}
 
-			window.PokiGodotBridge = createPokiGodotBridge();
-			window.PokiGodotBridge.ready.then(() => {
-				startGameLoading();
-			}).catch(() => {
-				startGameLoading();
-			});
-			
+window.PokiGodotBridge.ready.then(() => {
+	startGameLoading();
+}).catch(() => {
+	startGameLoading();
+});
 			</script>
 		</body>
 	</html>
